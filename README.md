@@ -1,5 +1,5 @@
 # app-film
-
+    Video search app with TMDb API
 ## Project setup
 ```
 yarn install
