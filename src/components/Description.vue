@@ -8,7 +8,7 @@
     </div>
     <div class="description__complementary">
       <div class="description__voteAverage">
-        <p><strong>Note</strong> : {{ currentMovie.vote_average }}</p>
+        <p><strong>Note</strong> : {{ currentMovie.vote_average }} / 10</p>
       </div>
       <div class="description__releaseDate">
         <p><strong>Date de sortie</strong> : {{ currentMovie.release_date }}</p>
@@ -25,7 +25,9 @@
     </div>
     <div :class="{ show: toggle }" class="modalImage">
       <img :src="`${poster}${currentMovie.poster_path}`" alt="" />
-      <div v-on:click="toggle = !toggle" class="cross">X</div>
+      <div v-on:click="toggle = !toggle" class="cross">
+        <p>X</p>
+      </div>
     </div>
   </div>
 </template>
@@ -69,6 +71,9 @@ export default {
   grid-column-end: 13;
   grid-row-start: 1;
   grid-row-end: 6;
+  transition: all 0.3s;
+  opacity: 1;
+  animation: clarity 1s;
 }
 
 .description__title {
@@ -76,11 +81,6 @@ export default {
   grid-column-end: 6;
   grid-row-start: 1;
   grid-row-end: 2;
-  transform: translateX(100px);
-}
-
-.description__title h1 {
-  transform: translateX(0);
 }
 
 .description__text {
@@ -113,6 +113,7 @@ export default {
 .description__text p,
 .description__title h1 {
   margin: 0;
+  transform: translateX(0);
 }
 
 .description__image {
@@ -123,6 +124,8 @@ export default {
   grid-row-end: 4;
   cursor: pointer;
   max-width: 150px;
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .description__image img {
@@ -144,6 +147,9 @@ export default {
 }
 
 .modalImage .cross {
+  display: flex;
+  justify-content: center;
+  align-content: center;
   position: absolute;
   top: -30px;
   right: 0px;
@@ -151,13 +157,24 @@ export default {
   color: #fff;
   cursor: pointer;
   width: 25px;
-  height: 25px;
+  height: auto;
   background-color: rgb(224, 65, 65);
   border-radius: 3px;
+}
+
+.cross p {
+  margin: 0;
 }
 
 .show {
   opacity: 1;
   transform: translateY(0);
+}
+
+@keyframes clarity {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
 }
 </style>

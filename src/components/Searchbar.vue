@@ -71,6 +71,7 @@ export default {
   grid-row-start: 4;
   grid-row-end: 4;
   align-self: center;
+  animation: clarity 1s;
 }
 
 .searchBar {
