@@ -92,6 +92,39 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  opacity: 1;
+  transition: translate 0.3s;
+}
+
+.presentation span:nth-child(1) {
+  opacity: 1;
+  animation: fadeSlideLeft 2s;
+}
+.presentation span:nth-child(2) {
+  opacity: 1;
+  animation: fade 5s;
+}
+.presentation span:nth-child(3) {
+  opacity: 1;
+  animation: fadeSlideRight 2s;
+}
+
+@keyframes fadeSlideLeft {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes fadeSlideRight {
+  from {
+    transform: translateX(20px);
+    opacity: 0;
+  }
 }
 
 .hidden {
