@@ -16,7 +16,10 @@
       />
       <div :class="{ card: hidden }" v-if="this.data">
         <p :key="this.data.original_title">
-          <router-link :to="`/movie/${this.data.id}/${this.data.original_title}`">{{ this.data.original_title  }}</router-link>
+          <router-link
+            :to="`/movie/${this.data.id}/${this.data.original_title}`"
+            >{{ this.data.original_title }}</router-link
+          >
         </p>
       </div>
     </header>
@@ -25,6 +28,7 @@
 
 <script>
 import axios from "axios";
+import { mapState } from "vuex";
 
 export default {
   name: "SearchMovie",
@@ -34,33 +38,25 @@ export default {
       search_movie: "",
       data: null,
 
-      url: "https://api.themoviedb.org/3/search/movie?",
-      api_key: "3aeb37be9cff3d6a23acce82476ce19a",
-      language: "fr",
-      include_adult: "false",
+      search_url: "search/movie?",
     };
   },
   props: {},
 
+  computed: {
+    ...mapState(["api_end_point", "api_key", "language", "include_adult"]),
+  },
+
   methods: {
     fetchMovie() {
       if (this.search_movie !== "") {
-        this.hidden = true
+        this.hidden = true;
         axios
           .get(
-            this.url +
-              "api_key=" +
-              this.api_key +
-              "&language=" +
-              this.language +
-              "&query=" +
-              this.search_movie +
-              "&page=1&include_adult=" +
-              this.include_adult
+            `${this.api_end_point}${this.search_url}api_key=${this.api_key}&language=${this.language}&query=${this.search_movie}&page=1&include_adult=${this.include_adult}`
           )
           .then((response) => {
             this.data = response.data.results[0];
-            // console.log(response.data.results[0]);
           })
           .catch((error) => console.error(error));
       }

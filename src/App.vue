@@ -21,7 +21,7 @@ export default {
   text-align: center;
   background-color: #34515E;
   color: rgba(255, 255, 255, .63);
-  padding: 60px 0;
+  padding-top: 60px;
   overflow: hidden;
 }
 </style>

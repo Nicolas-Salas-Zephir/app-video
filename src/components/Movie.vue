@@ -44,7 +44,7 @@
         <p>{{ data.original_title }}</p>
         <p>
           <span>{{ data.release_date }} -</span>
-          <span>{{ dataDetail.original_language }} -</span>
+          <span>{{ data.original_language }} -</span>
         </p>
       </div>
       <div class="description__overview">
@@ -85,6 +85,8 @@
 
 <script>
 import axios from "axios";
+import {mapState} from 'vuex'
+
 // import { Splide, SplideSlide } from "@splidejs/vue-splide";
 
 export default {
@@ -104,15 +106,15 @@ export default {
       dataDetail: null,
       datasSimilar: null,
 
-      url: "https://api.themoviedb.org/3/search/movie",
-      urlVideo: "https://api.themoviedb.org/3/movie/",
-      api_key: "3aeb37be9cff3d6a23acce82476ce19a",
-      language: "fr",
-      include_adult: "false",
+      search_url: "search/movie?",
+      movie_url: "movie/",
       poster: "https://image.tmdb.org/t/p/w500",
     };
   },
   props: {},
+  computed: {
+    ...mapState(['api_end_point', 'api_key', 'language', 'include_adult'])
+  },
   methods: {
     goStart() {
       this.$router.push("/");
@@ -120,29 +122,19 @@ export default {
 
     fetchMovie() {
       axios
-        .get(
-          this.url +
-            "?api_key=" +
-            this.api_key +
-            "&language=" +
-            this.language +
-            "&query=" +
-            this.movie +
-            "&page=1&include_adult=" +
-            this.include_adult
-        )
+        .get(`${this.api_end_point}${this.search_url}api_key=${this.api_key}&language=${this.language }&query=${this.movie}&page=1&include_adult=${this.include_adult}`)
         .then((response) => {
           this.data = response.data.results[0];
-          console.log(this.idMovie);
+          console.log(this.data);
         })
         .catch((error) => console.error(error));
     },
-    // https://api.themoviedb.org/3/movie/550?api_key=3aeb37be9cff3d6a23acce82476ce19a&language=en-US
 
     fetchDetail() {
       axios
         .get(
-          this.urlVideo +
+          this.api_end_point +
+          this.movie_url +
             this.idMovie +
             "?api_key=" +
             this.api_key +
@@ -151,7 +143,7 @@ export default {
         )
         .then((response) => {
           this.dataDetail = response.data;
-          console.log(this.dataDetail);
+          // console.log(this.dataDetail);
         })
         .catch((error) => console.error(error));
     },
@@ -159,36 +151,20 @@ export default {
     fetchVideo() {
       this.hidden = true;
       axios
-        .get(
-          this.urlVideo +
-            this.idMovie +
-            "/videos?api_key=" +
-            this.api_key +
-            "&language=" +
-            this.language
-        )
+        .get(`${this.api_end_point}${this.movie_url}${this.idMovie}/videos?api_key=${this.api_key}&language=${this.language}`)
         .then((response) => {
           this.dataMovie = response.data.results[0];
           console.log(this.dataMovie);
         })
         .catch((error) => console.error(error));
     },
-    // https://api.themoviedb.org/3/movie/31203/similar?api_key=3aeb37be9cff3d6a23acce82476ce19a&language=en-US&page=1
 
     fetchSimilarMovie() {
       axios
-        .get(
-          this.urlVideo +
-            this.idMovie +
-            "/similar?api_key=" +
-            this.api_key +
-            "&language=" +
-            this.language +
-            "&page=1"
-        )
+        .get(`${this.api_end_point}${this.movie_url}${this.idMovie}/similar?api_key=${this.api_key}&language=${this.language}&page=1`)
         .then((response) => {
           this.datasSimilar = response.data.results;
-          console.log(this.datasSimilar);
+          // console.log(this.datasSimilar);
         })
         .catch((error) => console.error(error));
     },
@@ -214,6 +190,7 @@ export default {
   height: 100%;
   width: 85%;
   margin: 0 auto;
+  padding-bottom: 32px;
 }
 
 #movie button {
