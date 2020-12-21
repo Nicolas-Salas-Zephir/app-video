@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <router-view name="searchBar"></router-view>
+    <router-view name="movie"></router-view>
   </div>
 </template>
 

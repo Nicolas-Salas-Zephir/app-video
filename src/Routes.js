@@ -1,7 +1,18 @@
-import SearchMovie from './components/SearchMovie'
-import Movie from './components/Movie'
+import SearchMovie from "./components/SearchMovie";
+import Movie from "./components/Movie";
 
 export default [
-    { path: '/', component: SearchMovie },
-    { path: '/movie/:idMovie/:movie', component: Movie }
-]
+  {
+    path: "/",
+    components: {
+      searchBar: SearchMovie,
+    },
+  },
+  {
+    path: "/movie/:idMovie(\\d+)/:movie",
+    components: {
+      movie: Movie,
+    },
+  },
+  { path: "*", redirect: "/" },
+];

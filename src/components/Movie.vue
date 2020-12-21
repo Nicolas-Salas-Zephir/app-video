@@ -33,11 +33,11 @@
         </button>
       </div>
       <div class="description__info" v-if="dataDetail">
-        <p>{{ data.original_title }}</p>
+        <h1>{{ data.original_title }}</h1>
         <p>
           <span>{{ splitWord(data.release_date) }}</span>
           <span>{{ formatTime(dataDetail.runtime) }}</span>
-           <span>{{ data.original_language }}</span>
+          <span>{{ data.original_language }}</span>
         </p>
         <p>
           <span>Note : {{ data.vote_average }}</span>
@@ -56,36 +56,20 @@
         allowfullscreen
       ></iframe>
     </div>
-    <div id="similarMovie" v-if="datasSimilar !== null">
-      <p class="similarMovie__title">Films similaires</p>
-      <div class="similarMovie__list">
-        <div
-          class="similarMovie__detail"
-          v-for="movie in datasSimilar"
-          :key="movie.id"
-        >
-          <router-link :to="`/movie/${movie.id}/${movie.original_title}`">
-            <img
-              :src="`${poster}${movie.poster_path}`"
-              :alt="movie.original_title"
-            />
-          </router-link>
-        </div>
-      </div>
-    </div>
-    <div v-else>
-      <p>Il n'y a pas de film similaire</p>
-    </div>
+    <CarouselSlide></CarouselSlide>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import CarouselSlide from "./carousel/CarouselSlide.vue";
 import { mapState } from "vuex";
 
 export default {
   name: "Movie",
-  components: {},
+  components: {
+    CarouselSlide,
+  },
   data() {
     return {
       hidden: false,
@@ -95,16 +79,19 @@ export default {
       data: null,
       dataMovie: null,
       dataDetail: null,
-      datasSimilar: null,
 
       search_url: "search/movie?",
-      movie_url: "movie/",
-      poster: "https://image.tmdb.org/t/p/w500",
+      
     };
   },
   props: {},
   computed: {
-    ...mapState(["api_end_point", "api_key", "language", "include_adult"]),
+    ...mapState(["api_end_point", "api_key", "language", "include_adult", "movie_url", "poster"]),
+
+    slidesCount() {
+      console.log(this.slides.length)
+      return this.slides.length;
+    },
   },
   methods: {
     goStart() {
@@ -115,13 +102,13 @@ export default {
       const wordArr = word.split("");
       const index = wordArr.indexOf("-");
       const format = wordArr.slice(0, index);
-      return format.join('');
+      return format.join("");
     },
 
     formatTime(time) {
       const hour = parseInt(time / 60);
-      const minutes = (time % 60)
-      return `${hour}h ${minutes}min`
+      const minutes = time % 60;
+      return `${hour}h ${minutes}min`;
     },
 
     fetchMovie() {
@@ -131,7 +118,6 @@ export default {
         )
         .then((response) => {
           this.data = response.data.results[0];
-          console.log(this.data);
         })
         .catch((error) => console.error(error));
     },
@@ -155,33 +141,18 @@ export default {
         )
         .then((response) => {
           this.dataMovie = response.data.results[0];
-          console.log(this.dataMovie);
+          // console.log(this.dataMovie);
         })
         .catch((error) => console.error(error));
     },
+  },
 
-    fetchSimilarMovie() {
-      axios
-        .get(
-          `${this.api_end_point}${this.movie_url}${this.idMovie}/similar?api_key=${this.api_key}&language=${this.language}&page=1`
-        )
-        .then((response) => {
-          this.datasSimilar = response.data.results;
-        })
-        .catch((error) => console.error(error));
-    },
-
-    // similarMovie() {
-
-    // }
+  created() {
+    this.fetchMovie();
+    this.fetchDetail();
   },
 
   updated() {},
-  mounted() {
-    this.fetchMovie();
-    this.fetchDetail();
-    this.fetchSimilarMovie();
-  },
 };
 </script>
 
@@ -261,6 +232,10 @@ button {
   margin-left: 35px;
 }
 
+.description__info h1 {
+  font-size: 20px;
+}
+
 .description__info p span {
   display: inline-block;
   margin-right: 9px;
@@ -271,7 +246,8 @@ button {
   margin: 0 0 12px 0;
   font-size: 16px;
 }
-.description__info p:nth-child(2), .description__info p:nth-child(3) {
+.description__info p:nth-child(2),
+.description__info p:nth-child(3) {
   margin: 0 0 12px 0;
   font-size: 12px;
 }
@@ -280,7 +256,7 @@ button {
 }
 
 .description__info p:nth-child(2) span:nth-child(2)::before,
-.description__info p:nth-child(2) span:nth-child(1)::before  {
+.description__info p:nth-child(2) span:nth-child(1)::before {
   content: "";
   position: absolute;
   width: 2px;
@@ -297,19 +273,6 @@ button {
   width: 100%;
   border-radius: 3px;
 }
-
-/* .description__runtime {
-  background-color: #607d8b;
-  text-align: left;
-  border-radius: 0 0 3px 3px;
-  font-size: 12px;
-  padding: 5px 0;
-}
-
-.description__runtime span {
-  display: inline-block;
-  padding: 0 5px;
-} */
 
 .description__overview {
   flex: 0 0 100%;
@@ -346,44 +309,60 @@ button {
   transform: translateX(calc(60% - (300px / 2)));
 }
 
-/* iframe {
-  position: absolute;
-  top: calc(50%);
-  left: 0;
-} */
-
 .cross {
   position: absolute;
   top: -20px;
   right: 0;
 }
 
-#similarMovie {
-  display: flex;
-  flex-wrap: wrap;
-}
+@media screen and (min-width: 1024px) {
+  .movie__backdrop {
+    position: fixed;
+    height: 100%;
+  }
 
-.similarMovie__title {
-  flex: 0 0 100%;
-  text-align: left;
-  margin: 0 0 10px 0;
-}
+  .movie__backdrop::after {
+    background: rgba(52, 81, 94, 0.5);
+  }
 
-.similarMovie__list {
-  display: flex;
-  justify-content: start;
-}
+  .movie__backdrop img {
+    object-position: left top;
+    height: 100%;
+  }
 
-.similarMovie__detail {
-  flex: 0 0 40%;
-  overflow: hidden;
-  margin-right: 5px;
-}
+  .description {
+    margin-top: 10vw;
+    margin-bottom: 64px;
+  }
 
-.similarMovie__detail img {
-  object-fit: cover;
-  object-position: left top;
-  width: 100%;
-  border-radius: 3px;
+  .description__info h1 {
+    font-size: 40px;
+  }
+  .description__info p,
+  .description__overview p {
+    font-size: 20px !important;
+  }
+
+  .description__overview {
+    flex: 0 0 50%;
+  }
+
+  .description__image {
+    flex: 0 0 25%;
+  }
+
+  .trailer {
+    justify-content: space-around;
+  }
+
+  #video {
+    height: 500px;
+    transform: none;
+  }
+
+  #video iframe {
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>

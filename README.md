@@ -1,23 +1,10 @@
 # app-film
     Video search app with TMDb API
+    On Tablet and Mobile
+
 ## Project setup
 ```
-yarn install
-```
-
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
-
-### Compiles and minifies for production
-```
-yarn build
-```
-
-### Lints and fixes files
-```
-yarn lint
+    App with vue.js 2.6.11
 ```
 
 ### Customize configuration

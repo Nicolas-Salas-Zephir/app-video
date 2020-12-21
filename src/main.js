@@ -4,9 +4,13 @@ import VueRouter from 'vue-router'
 import Routes from './Routes'
 import store from './store'
 
+// Library Vue Carousel "https://ssense.github.io/vue-carousel/guide/"
+import VueCarousel from 'vue-carousel';
+
+
 Vue.config.productionTip = false
 
-Vue.use(VueRouter)
+Vue.use(VueRouter, VueCarousel)
 
 const router = new VueRouter({
   routes: Routes,
